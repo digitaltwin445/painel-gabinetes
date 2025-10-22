@@ -2,185 +2,222 @@
 <html lang="pt-BR">
 <head>
   <meta charset="utf-8" />
-  <title>Painel – 8 Gabinetes (Código + Status)</title>
+  <title>Painel de Produção – 8 Gabinetes</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="version" content="3.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <style>
     :root{
-      --bg:#0f1115; --card:#151924; --txt:#e7e9ee; --muted:#9aa4b2;
-      --radius:20px; --border:#242a3d;
-      --vermelho:#E53935; --amarelo:#FDD835; --verde:#16A34A; --cinza:#2d333f;
-      --badge-ok-bg: rgba(22,163,74,.12);
-      --badge-ok-bd: rgba(22,163,74,.35);
-      --badge-off-bg: rgba(107,114,128,.18);
-      --badge-off-bd: rgba(107,114,128,.35);
-      --badge-danger-bg: rgba(220,38,38,.14);
-      --badge-danger-bd: rgba(220,38,38,.45);
+      --bg:#0A0F1C; --card:#111827; --border:#1E293B;
+      --txt:#E5E7EB; --muted:#94A3B8;
+      --verde:#7BB135; --vermelho:#D62828; --amarelo:#FACC15;
+      --cinza:#374151; --azul:#003057;
+      --radius:16px; --shadow:0 8px 24px rgba(0,0,0,0.35);
     }
-    *{ box-sizing:border-box }
-    body{ margin:0; background:var(--bg); color:var(--txt); font-family:system-ui, Segoe UI, Roboto, Arial, sans-serif }
-    header{ display:flex; align-items:center; justify-content:space-between; gap:12px; padding:16px 20px; border-bottom:1px solid #222634 }
-    .title{ font-weight:800; letter-spacing:.3px }
-    .toolbar{ display:flex; gap:8px; flex-wrap:wrap }
+    *{box-sizing:border-box;transition:all .25s ease-out}
+    body{margin:0;background:var(--bg);color:var(--txt);
+      font-family:Segoe UI,system-ui,Roboto,sans-serif}
+    header{
+      background:linear-gradient(90deg,var(--azul),#111827);
+      color:#fff;padding:16px 24px;
+      display:flex;align-items:center;justify-content:space-between;
+      box-shadow:0 2px 8px rgba(0,0,0,.4);position:sticky;top:0;z-index:10}
+    .title{font-weight:800;font-size:1.1rem;letter-spacing:.3px}
+    .toolbar{display:flex;gap:8px;flex-wrap:wrap}
     button{
-      background:#1e2433; color:var(--txt); border:1px solid var(--border); border-radius:12px;
-      padding:10px 14px; cursor:pointer; font-weight:700
-    }
-    button:hover{ filter:brightness(1.06) }
-    main{ padding:20px; max-width:1400px; margin:0 auto }
-    .grid{ display:grid; gap:16px; grid-template-columns:repeat(4, minmax(0,1fr)) }
-    @media (max-width:1100px){ .grid{ grid-template-columns:repeat(2, minmax(0,1fr)) } }
-    @media (max-width:620px){ .grid{ grid-template-columns:1fr } }
-
+      background:#1E293B;border:1px solid var(--border);
+      color:var(--txt);border-radius:12px;padding:10px 14px;
+      font-weight:700;cursor:pointer}
+    button:hover{filter:brightness(1.1);transform:translateY(-2px)}
+    main{padding:24px;max-width:1400px;margin:0 auto}
+    .grid{display:grid;gap:16px;grid-template-columns:repeat(4,minmax(0,1fr))}
+    @media(max-width:1100px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media(max-width:640px){.grid{grid-template-columns:1fr}}
     .card{
-      background:var(--card); border:1px solid var(--border); border-radius:var(--radius);
-      padding:16px; display:flex; flex-direction:column; gap:12px; min-height:210px;
-      box-shadow:0 8px 24px rgba(0,0,0,.25); position:relative;
-    }
-    .row{ display:flex; align-items:center; justify-content:space-between; gap:10px }
-    .tag{ font-size:.85rem; color:var(--muted) }
-    .cab-title{ font-size:1.1rem; font-weight:800 }
+      background:var(--card);border:1px solid var(--border);
+      border-radius:var(--radius);padding:16px;
+      display:flex;flex-direction:column;gap:12px;min-height:210px;
+      box-shadow:var(--shadow)}
+    .row{display:flex;align-items:center;justify-content:space-between}
+    .tag{font-size:.8rem;color:var(--muted)}
+    .cab-title{font-size:1.2rem;font-weight:800}
     .preview{
-      height:60px; width:100%; border-radius:14px; border:1px solid var(--border);
-      display:flex; align-items:center; justify-content:center; font-weight:800;
-      text-shadow:0 2px 6px rgba(0,0,0,.35)
-    }
-    .controls{ display:grid; grid-template-columns:1fr auto; gap:8px; align-items:center }
+      height:70px;width:100%;border-radius:14px;border:1px solid var(--border);
+      display:flex;align-items:center;justify-content:center;font-weight:800;
+      font-size:1.4rem;text-shadow:0 2px 6px rgba(0,0,0,.35);color:#fff}
+    .controls{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center}
     input[type="number"]{
-      background:#1b2130; color:var(--txt); border:1px solid var(--border); border-radius:10px;
-      padding:10px; outline:none; font-weight:600
-    }
-    .statusbar{ display:flex; gap:8px; flex-wrap:wrap }
-    .badge{
-      font-size:.75rem; padding:4px 10px; border-radius:999px; border:1px solid var(--border); color:#cbd5e1
-    }
-    .b-ok{     background:var(--badge-ok-bg);  border-color:var(--badge-ok-bd) }
-    .b-off{    background:var(--badge-off-bg); border-color:var(--badge-off-bd) }
-    .b-danger{ background:var(--badge-danger-bg); border-color:var(--badge-danger-bd) }
-    .footer{ padding:12px 20px; color:var(--muted); border-top:1px solid #222634; text-align:center }
-
-    /* Popup de manutenção (estilo placa de aviso) */
-    .popup{
-      position:absolute; inset:0;
-      display:flex; flex-direction:column; align-items:center; justify-content:center;
-      background:rgba(0,0,0,0.8); border-radius:14px;
-      z-index:5; color:#000000;
-      animation: fadeIn .3s ease-in-out;
-    }
-    .popup-card{
-      background:#ffffff; border:4px solid #000; border-radius:10px; text-align:center;
-      box-shadow:0 0 20px rgba(0,0,0,0.6);
-    }
-    .popup-header{
-      background:#d60000; color:#fff; font-weight:900; font-size:1.3rem;
-      padding:8px 24px; border-bottom:4px solid #000;
-    }
-    .popup-body{
-      background:#fff; padding:12px 20px; font-weight:800; font-size:1rem;
-    }
-    .popup button{
-      margin-top:8px; background:#1b2130; color:#fff; border-radius:8px; font-size:.9rem;
-    }
-    @keyframes fadeIn{ from{opacity:0} to{opacity:1} }
+      background:#1B2433;color:var(--txt);border:1px solid var(--border);
+      border-radius:10px;padding:10px;outline:none;font-weight:600}
+    .statusbar{display:flex;gap:8px;flex-wrap:wrap}
+    .badge{font-size:.75rem;padding:4px 10px;border-radius:999px;
+      border:1px solid var(--border);color:#cbd5e1}
+    .b-ok{background:rgba(123,177,53,.15);border-color:rgba(123,177,53,.4)}
+    .b-off{background:rgba(107,114,128,.18);border-color:rgba(107,114,128,.35)}
+    .b-danger{background:rgba(214,40,40,.18);border-color:rgba(214,40,40,.45)}
+    .footer{
+      padding:14px 20px;color:var(--muted);
+      border-top:1px solid var(--border);text-align:center;font-size:.8rem}
   </style>
 </head>
 <body>
   <header>
-    <div class="title">Painel – 8 Gabinetes (Código + Status)</div>
+    <div class="title">Painel de Produção – 8 Gabinetes</div>
     <div class="toolbar">
-      <button id="btnFull">Tela cheia</button>
-      <button id="btnExport">Exportar JSON</button>
-      <button id="btnImport">Importar JSON</button>
-      <button id="btnReset" style="border-color:#7a2b2b">Reset</button>
+      <button id="btnFull">⛶ Tela cheia</button>
+      <button id="btnExport">💾 Exportar</button>
+      <button id="btnImport">⬆️ Importar</button>
+      <button id="btnReset" style="border-color:#7a2b2b;color:#ffcccc">♻️ Reset</button>
     </div>
   </header>
 
   <main><div class="grid" id="grid"></div></main>
-  <div class="footer">Desenvolvido por Emerson Muniz • emerson.muniz@volvo.com (localStorage). v2.0</div>
+  <div class="footer">Desenvolvido por Emerson Muniz • v3.0 • 2025</div>
 
   <script>
-    /* ======== Conjuntos ======== */
-    const vermelhoSet = new Set([2101,2102,2201,2302,2401,2603,2605,2608,2701,2702,2703,2704,2705,3301,3401,3402,3501,3503,3602,3702,5202,5502,5602,8000,8130,8160,8210,8225,8260,8345,8390,8405,8445,8500,8510,8530,8515]);
-    const amareloSet  = new Set([8505,8470,8475,8320,1217,1415,1723,1211,1517,1616,8040,8310,1512,1604,1518,1711,8545,5015,8230,8485,8065,2241,1214,1203,1402,1610,1519,2995,5497,1617,2103]);
+    const vermelhoSet=new Set([2101,2102,2201,2302,2401,2603,2605,2608,2701,2702,2703,2704,2705,3301,3401,3402,3501,3503,3602,3702]);
+    const amareloSet=new Set([8505,8470,8475,8320,1217,1415,1723,1211,1517]);
+    function css(v){return getComputedStyle(document.documentElement).getPropertyValue(v).trim();}
+    const COLORS={vermelho:css('--vermelho'),amarelo:css('--amarelo'),verde:css('--verde'),
+      cinza:css('--cinza'),azul:css('--azul')};
 
-    /* ======== Utilidades ======== */
-    function css(v){ return getComputedStyle(document.documentElement).getPropertyValue(v).trim(); }
-    const COLORS = { vermelho:css('--vermelho')||'#E53935', amarelo:css('--amarelo')||'#FDD835', verde:css('--verde')||'#16A34A', cinza:css('--cinza')||'#2d333f' };
-    function formatTime(ts){ return ts ? new Date(ts).toLocaleString() : '—'; }
-    function idealTextColor(hex){ const h=hex.replace('#',''); const r=parseInt(h.slice(0,2),16), g=parseInt(h.slice(2,4),16), b=parseInt(h.slice(4,6),16); const L=(0.299*r+0.587*g+0.114*b)/255; return L>0.6 ? '#12141b' : '#f5f7fb'; }
-    function bgByCodigo(c){ if(vermelhoSet.has(c)) return COLORS.vermelho; if(amareloSet.has(c)) return COLORS.amarelo; return COLORS.verde; }
+    const STORAGE_KEY='painel_gabinetes_v3_0';
+    const DEFAULT_STATE=Array.from({length:8},(_,i)=>({gabinete:i+1,codigo:'',display:'',
+      bgHex:'',status:'vazio',updatedAt:null}));
 
-    /* ======== Estado ======== */
-    const STORAGE_KEY = 'painel_gabinetes_v2_0';
-    const DEFAULT_STATE = Array.from({length:8}, (_,i)=>({ gabinete:i+1, codigo:'', display:'', bgHex:'', status:'vazio', updatedAt:null }));
-    function loadState(){ try{ const raw=localStorage.getItem(STORAGE_KEY); if(!raw) return structuredClone(DEFAULT_STATE); const parsed=JSON.parse(raw); return DEFAULT_STATE.map((d,i)=>({ ...d, ...(parsed[i]||{}) })); }catch{ return structuredClone(DEFAULT_STATE); } }
-    function saveState(s){ localStorage.setItem(STORAGE_KEY, JSON.stringify(s)); }
+    function loadState(){
+      try{const raw=localStorage.getItem(STORAGE_KEY);
+        if(!raw)return structuredClone(DEFAULT_STATE);
+        const parsed=JSON.parse(raw);
+        return DEFAULT_STATE.map((d,i)=>({...d,...(parsed[i]||{})}));
+      }catch{return structuredClone(DEFAULT_STATE);}
+    }
+    function saveState(s){localStorage.setItem(STORAGE_KEY,JSON.stringify(s));}
+    let STATE=loadState();
+    const grid=document.getElementById('grid');
 
-    /* ======== UI ======== */
-    let STATE = loadState();
-    const grid = document.getElementById('grid');
-
-    function applyPreview(el,item){
-      el.innerHTML = ''; el.style.background=''; el.style.color='#fff';
-      if(item.status==='vazio'){ el.style.background=COLORS.cinza; el.textContent='Vazio'; return; }
-      if(item.status==='tinta'){ const bg=item.bgHex||COLORS.verde; el.style.background=bg; el.textContent=item.display||'—'; el.style.color=idealTextColor(bg); return; }
-      if(item.status==='manutencao'){ showPopup(el); return; }
+    function formatTime(ts){return ts?new Date(ts).toLocaleString():'—';}
+    function bgByCodigo(c){
+      if(c===0)return COLORS.amarelo;
+      if(c===1)return COLORS.verde;
+      if(vermelhoSet.has(c))return COLORS.vermelho;
+      if(amareloSet.has(c))return COLORS.amarelo;
+      return COLORS.verde;
     }
 
-    function showPopup(container){
-      const popup=document.createElement('div'); popup.className='popup';
-      popup.innerHTML=`
-        <div class="popup-card">
-          <div class="popup-header">ATENÇÃO</div>
-          <div class="popup-body">EQUIPAMENTO<br>EM MANUTENÇÃO</div>
-          <button>Fechar</button>
-        </div>`;
-      const btn=popup.querySelector('button');
-      btn.onclick=()=> popup.remove();
-      container.appendChild(popup);
+    function applyPreview(el,item){
+      el.textContent='';el.style.background='';el.style.color='#fff';
+      if(item.status==='vazio'){el.style.background=COLORS.cinza;el.textContent='VAZIO';return;}
+      if(item.status==='tinta'){
+        const cod=Number(item.codigo);
+        const bg=bgByCodigo(cod);
+        el.style.background=bg;
+        if(cod===0)el.textContent='PRIMER';
+        else if(cod===1)el.textContent='VERNIZ';
+        else el.textContent=item.display||'—';
+        return;
+      }
+      if(item.status==='manutencao'){el.style.background=COLORS.vermelho;el.textContent='MANUTENÇÃO';}
     }
 
     function applyBadge(badgeEl,item){
       badgeEl.className='badge';
-      if(item.status==='tinta'){ badgeEl.classList.add('b-ok'); badgeEl.textContent='Com tinta'; }
-      else if(item.status==='manutencao'){ badgeEl.classList.add('b-danger'); badgeEl.textContent='Manutenção'; }
-      else { badgeEl.classList.add('b-off'); badgeEl.textContent='Vazio'; }
+      if(item.status==='tinta'){badgeEl.classList.add('b-ok');badgeEl.textContent='Com tinta';}
+      else if(item.status==='manutencao'){badgeEl.classList.add('b-danger');badgeEl.textContent='Manutenção';}
+      else{badgeEl.classList.add('b-off');badgeEl.textContent='Vazio';}
     }
 
     function cardView(item){
-      const card=document.createElement('div'); card.className='card';
-      const top=document.createElement('div'); top.className='row';
-      const left=document.createElement('div'); left.innerHTML=`<div class="tag">Gabinete</div><div class="cab-title">#${item.gabinete}</div>`;
+      const card=document.createElement('div');card.className='card';
+      const top=document.createElement('div');top.className='row';
+      const left=document.createElement('div');
+      left.innerHTML=`<div class="tag">Gabinete</div><div class="cab-title">#${item.gabinete}</div>`;
       const right=document.createElement('div');
-      right.innerHTML=`<span class="badge" id="badge-${item.gabinete}"></span><span class="badge" style="margin-left:8px" id="stamp-${item.gabinete}">Atualizado: ${formatTime(item.updatedAt)}</span>`;
+      right.innerHTML=`<span class="badge" id="badge-${item.gabinete}"></span>
+        <span class="badge" style="margin-left:8px" id="stamp-${item.gabinete}">
+        Atualizado: ${formatTime(item.updatedAt)}</span>`;
       top.append(left,right);
-      const preview=document.createElement('div'); preview.className='preview';
-      applyPreview(preview,item); applyBadge(right.firstElementChild,item);
 
-      const controls=document.createElement('div'); controls.className='controls';
-      const codInput=document.createElement('input'); codInput.type='number'; codInput.placeholder='Código (ex.: 2101)'; codInput.value=item.codigo||'';
-      const btnAplicar=document.createElement('button'); btnAplicar.textContent='Aplicar código';
-      btnAplicar.onclick=()=>{ const val=String(codInput.value||'').trim(); if(!val){alert('Digite um código.');return;} const codNum=Number(val); const idx=item.gabinete-1; STATE[idx].codigo=codNum; STATE[idx].display=String(codNum); STATE[idx].bgHex=bgByCodigo(codNum); STATE[idx].updatedAt=Date.now(); saveState(STATE); applyPreview(preview,STATE[idx]); document.getElementById(`stamp-${item.gabinete}`).textContent=`Atualizado: ${formatTime(STATE[idx].updatedAt)}`; };
-      codInput.addEventListener('keydown',(e)=>{ if(e.key==='Enter') btnAplicar.click(); });
+      const preview=document.createElement('div');preview.className='preview';
+      applyPreview(preview,item);applyBadge(right.firstElementChild,item);
 
-      const bTinta=document.createElement('button'); bTinta.textContent='Com tinta';
-      const bVazio=document.createElement('button'); bVazio.textContent='Vazio';
-      const bManut=document.createElement('button'); bManut.textContent='Manutenção';
-      const setStatus=(st)=>{ const idx=item.gabinete-1; STATE[idx].status=st; STATE[idx].updatedAt=Date.now(); saveState(STATE); applyPreview(preview,STATE[idx]); applyBadge(right.firstElementChild,STATE[idx]); document.getElementById(`stamp-${item.gabinete}`).textContent=`Atualizado: ${formatTime(STATE[idx].updatedAt)}`; };
-      bTinta.onclick=()=>setStatus('tinta'); bVazio.onclick=()=>setStatus('vazio'); bManut.onclick=()=>setStatus('manutencao');
+      const controls=document.createElement('div');controls.className='controls';
+      const codInput=document.createElement('input');
+      codInput.type='number';codInput.placeholder='Código (ex.: 0000)';
+      codInput.value=item.codigo||'';
+      const btnAplicar=document.createElement('button');
+      btnAplicar.textContent='Aplicar código';
+      btnAplicar.onclick=()=>{
+        const val=String(codInput.value||'').trim();
+        if(!val){alert('Digite um código.');return;}
+        const codNum=Number(val);
+        const idx=item.gabinete-1;
+        STATE[idx].codigo=codNum;
+        STATE[idx].display=String(codNum).padStart(4,'0');
+        STATE[idx].bgHex=bgByCodigo(codNum);
+        STATE[idx].updatedAt=Date.now();
+        saveState(STATE);
+        applyPreview(preview,STATE[idx]);
+        document.getElementById(`stamp-${item.gabinete}`).textContent=
+          `Atualizado: ${formatTime(STATE[idx].updatedAt)}`;
+      };
+      codInput.addEventListener('keydown',e=>{if(e.key==='Enter')btnAplicar.click();});
 
-      const btns=document.createElement('div'); btns.className='statusbar'; btns.append(bTinta,bVazio,bManut);
+      const bTinta=document.createElement('button');bTinta.textContent='Com tinta';
+      const bVazio=document.createElement('button');bVazio.textContent='Vazio';
+      const bManut=document.createElement('button');bManut.textContent='Manutenção';
+      const setStatus=st=>{
+        const idx=item.gabinete-1;
+        STATE[idx].status=st;
+        STATE[idx].updatedAt=Date.now();
+        saveState(STATE);
+        applyPreview(preview,STATE[idx]);
+        applyBadge(right.firstElementChild,STATE[idx]);
+        document.getElementById(`stamp-${item.gabinete}`).textContent=
+          `Atualizado: ${formatTime(STATE[idx].updatedAt)}`;
+      };
+      bTinta.onclick=()=>setStatus('tinta');
+      bVazio.onclick=()=>setStatus('vazio');
+      bManut.onclick=()=>setStatus('manutencao');
+
+      const btns=document.createElement('div');btns.className='statusbar';
+      btns.append(bTinta,bVazio,bManut);
       controls.append(codInput,btnAplicar);
       card.append(top,preview,controls,btns);
       return card;
     }
 
-    function render(){ grid.innerHTML=''; STATE.forEach(it=>grid.appendChild(cardView(it))); }
-
-    document.getElementById('btnFull').onclick=()=>{ if(!document.fullscreenElement){ document.documentElement.requestFullscreen(); } else { document.exitFullscreen(); }};
-    document.getElementById('btnExport').onclick=()=>{ const blob=new Blob([JSON.stringify(STATE,null,2)],{type:'application/json'}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='gabinetes_estado.json'; a.click(); URL.revokeObjectURL(url); };
-    document.getElementById('btnImport').onclick=()=>{ const inp=document.createElement('input'); inp.type='file'; inp.accept='application/json'; inp.onchange=async()=>{const f=inp.files?.[0];if(!f)return;try{const data=JSON.parse(await f.text());STATE=DEFAULT_STATE.map((d,i)=>({...d,...(data[i]||{})}));saveState(STATE);render();}catch{alert('Falha ao importar JSON.');}};inp.click();};
-    document.getElementById('btnReset').onclick=()=>{ if(confirm('Limpar tudo e voltar ao padrão?')){ STATE=structuredClone(DEFAULT_STATE); saveState(STATE); render(); }};
-
+    function render(){grid.innerHTML='';STATE.forEach(it=>grid.appendChild(cardView(it)));}
+    document.getElementById('btnFull').onclick=()=>{
+      if(!document.fullscreenElement){document.documentElement.requestFullscreen();}
+      else{document.exitFullscreen();}
+    };
+    document.getElementById('btnExport').onclick=()=>{
+      const blob=new Blob([JSON.stringify(STATE,null,2)],{type:'application/json'});
+      const url=URL.createObjectURL(blob);
+      const a=document.createElement('a');
+      a.href=url;a.download='gabinetes_estado.json';a.click();
+      URL.revokeObjectURL(url);
+    };
+    document.getElementById('btnImport').onclick=()=>{
+      const inp=document.createElement('input');
+      inp.type='file';inp.accept='application/json';
+      inp.onchange=async()=>{
+        const f=inp.files?.[0];if(!f)return;
+        try{
+          const data=JSON.parse(await f.text());
+          STATE=DEFAULT_STATE.map((d,i)=>({...d,...(data[i]||{})}));
+          saveState(STATE);render();
+        }catch{alert('Falha ao importar JSON.');}
+      };inp.click();
+    };
+    document.getElementById('btnReset').onclick=()=>{
+      if(confirm('Limpar tudo e voltar ao padrão?')){
+        STATE=structuredClone(DEFAULT_STATE);saveState(STATE);render();
+      }
+    };
     render();
   </script>
 </body>
